@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NFL Play Analyzer</title>
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div id="app">
+  <!-- Header -->
+  <header id="topbar">
+    <div class="logo">🏈 NFL Play Analyzer</div>
+    <div class="subtitle">Passing game: option quality, precision &amp; decision timing</div>
+  </header>
+
+  <div id="main-layout">
+    <!-- Left: field + controls -->
+    <div id="field-panel">
+      <div id="field-container">
+        <canvas id="field" width="1000" height="444"></canvas>
+        <div id="frame-overlay"></div>
+        <div id="timing-banner" class="ts-none" aria-live="polite"></div>
+        <div id="zoom-controls">
+          <button id="btn-zoom-in" class="zoom-btn" title="Zoom in">+</button>
+          <button id="btn-zoom-out" class="zoom-btn" title="Zoom out" disabled>−</button>
+          <button id="btn-zoom-reset" class="zoom-btn" title="Reset zoom" style="display:none">⤢</button>
+        </div>
+      </div>
+
+      <!-- Playback controls -->
+      <div id="controls">
+        <button id="btn-play" class="ctrl-btn" title="Play/Pause">▶</button>
+        <button id="btn-prev" class="ctrl-btn" title="Previous frame">⏮</button>
+        <button id="btn-next" class="ctrl-btn" title="Next frame">⏭</button>
+        <input type="range" id="scrubber" min="0" max="0" value="0" step="1">
+        <span id="frame-label">Frame 0 / 0</span>
+        <label class="speed">Speed:
+          <select id="speed">
+            <option value="0.5">0.5×</option>
+            <option value="1" selected>1×</option>
+            <option value="2">2×</option>
+            <option value="4">4×</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- chess.com-style key-moment navigator -->
+      <div id="moves-bar">
+        <button id="btn-move-prev" class="move-nav" title="Previous moment">‹</button>
+        <div id="moves-track"></div>
+        <button id="btn-move-next" class="move-nav" title="Next moment">›</button>
+      </div>
+    </div>
+
+    <!-- Right: sidebar -->
+    <div id="sidebar">
+      <!-- Play selector -->
+      <section class="panel">
+        <h2>Select a Play</h2>
+        <label>Game</label>
+        <select id="game-select"></select>
+        <label>Play</label>
+        <select id="play-select"></select>
+      </section>
+
+      <!-- Play info -->
+      <section class="panel" id="play-info-panel" style="display:none">
+        <h2>Play Info</h2>
+        <div id="play-info"></div>
+      </section>
+
+      <!-- Pass options: multi-criteria evaluation -->
+      <section class="panel" id="sim-panel" style="display:none">
+        <h2>Pass Options <span class="hint">4 criteria · click a receiver</span></h2>
+        <div id="po-verdict"></div>
+        <details id="po-weights-box">
+          <summary>Criteria weights</summary>
+          <div id="po-weights"></div>
+        </details>
+        <div id="sim-actions">
+          <button id="btn-best" class="sim-btn">🏆 Best option</button>
+          <button id="btn-eval-now" class="sim-btn">⏱ Evaluate at this frame</button>
+          <button id="btn-reset-sim" class="sim-btn secondary">↺ At throw</button>
+        </div>
+        <div id="po-frame-note" class="hint-line"></div>
+        <div id="sim-list"></div>
+        <div id="sim-detail"></div>
+      </section>
+
+      <!-- Precision -->
+      <section class="panel" id="precision-panel" style="display:none">
+        <h2>Precision <span class="hint">completion vs expected (CPOE)</span></h2>
+        <div id="precision"></div>
+      </section>
+
+      <!-- Decision timing -->
+      <section class="panel" id="decision-panel" style="display:none">
+        <h2>Decision Timing <span class="hint">best option over time</span></h2>
+        <canvas id="decision-chart" width="320" height="110"></canvas>
+        <div id="decision"></div>
+      </section>
+
+      <!-- Timing Delta (compute_timing.py) -->
+      <section class="panel" id="timing-panel" style="display:none">
+        <h2>Timing Delta <span class="hint">receiver clock vs pocket clock</span></h2>
+        <div id="timing-verdict"></div>
+        <div id="timing-clock">
+          <div id="timing-track">
+            <div class="tm-marker tm-open" id="tm-open"><span>open</span></div>
+            <div class="tm-marker tm-pressure" id="tm-pressure"><span>pressure</span></div>
+            <div class="tm-marker tm-end" id="tm-end"><span>end</span></div>
+            <div id="tm-cursor"></div>
+          </div>
+          <div id="timing-axis"><span>snap</span><span id="tm-axis-max"></span></div>
+        </div>
+        <div id="timing-stats"></div>
+      </section>
+
+      <!-- Receiver openness (live) -->
+      <section class="panel" id="openness-panel" style="display:none">
+        <h2>Receiver Openness <span class="hint">at current frame</span></h2>
+        <div id="openness-list"></div>
+      </section>
+
+    </div>
+  </div>
+</div>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
