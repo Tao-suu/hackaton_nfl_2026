@@ -50,7 +50,7 @@ effects. The ball-flight model is a simple approximation.
 
 ## Data
 
-The dataset is not in this repo (≈1 GB). Clone it into `data_nfl/`:
+The dataset is not in this repo (≈1 GB). Clone it into `data_nfl/` with `make data_install`, or by hand:
 
 ```bash
 git clone https://github.com/ThompsonJamesBliss/nfl-big-data-bowl-regional-event-data.git data_nfl
@@ -63,8 +63,17 @@ The app expects `data_nfl/data/{games,plays,players,pffScoutingData}.csv` and
 
 ```bash
 pip3 install -r requirements.txt
-python3 app.py          # http://localhost:5000
+make all                # clone the data, build it, launch the app
 ```
+
+| Rule | What it does |
+|---|---|
+| `make data_install` | clones the dataset into `data_nfl/` (skipped if already there) |
+| `make data_build` | links `data -> data_nfl/data`, then runs `compute_timing.py` (→ `data_timing_tmp/`), `explore_gravity.py`, `build_dataset.py` (→ `data_enriched/`) |
+| `make launch` | starts the app on http://localhost:5000 |
+| `make all` | `data_install` + `data_build` + `launch` |
+
+Use another interpreter with `make launch PYTHON=python3.12`.
 
 First run builds `pass_reference.json` (~2.5 min, all 122 games), then it is cached.
 Delete the file to rebuild.

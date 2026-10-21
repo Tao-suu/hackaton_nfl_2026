@@ -28,4 +28,5 @@ data_build:
 
 # Lance le front Flask sur http://localhost:5000
 launch:
+	pip3 install -r requirements.txt
 	$(PYTHON) app.py
